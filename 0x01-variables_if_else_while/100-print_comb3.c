@@ -1,5 +1,6 @@
 #include <stdio.h>
 /**
+ * main - Entry point for main function
  * main - main function
  *
  * Return: 0
@@ -19,8 +20,10 @@ int main(void)
 				putchar(i + '0');
 				putchar(j + '0');
 				if (i + j != 17)
+				{
 				putchar(',');
 				putchar(' ');
+				}
 			}
 		}
 	}
