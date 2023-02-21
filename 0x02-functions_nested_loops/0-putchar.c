@@ -1,8 +1,8 @@
 #include "main.h"
 /**
- * main - A program that prints _putchar
+ * main - program that prints characters (_putchar)
  * Created by Ibrahim Omeiza
- * Return 0
+ * Return: 0
  */
 int main(void)
 {
