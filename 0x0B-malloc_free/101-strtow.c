@@ -1,70 +1,85 @@
+#include <stddef.h>
 #include <stdlib.h>
 #include "main.h"
 /**
- * count_word - helper function to count the number of words in a string
- * @s: string to evaluate
- * Return: number of words
+ * copychars - copies chars to buffer
+ * @b: destination buffer
+ * @start: starting char pointer
+ * @stop: ending char pointer
  */
-int count_word(char *s)
+void copychars(char *b, char *start, char *stop)
 {
-	int flag, c, w;
-
-	flag = 0;
-	w = 0;
-
-	for (c = 0; s[c] != '\0'; c++)
-	{
-		if (s[c] == ' ')
-		flag = 0;
-		else if (flag == 0)
-			{
-				flag = 1;
-				w++;
-			}
-	}
-	return (w);
+	while (start <= stop)
+		*b++ = *start++;
+	*b = 0;
 }
+
 /**
- * **strtow - splits a string into words
- * @str: string to split
+ * wordcount - counts the number of words
+ * @str: the sentence string
  *
- * Return: pointer to an array of strings (Success)
- * or NULL (Error)
+ * Return: int number of words
+ */
+int wordcount(char *str)
+{
+	int words = 0, in_word = 0;
+
+	while (1)
+	{
+		if (*str == ' ' || !*str)
+		{
+			if (in_word)
+				words++;
+			in_word = 0;
+			if (!*str)
+				break;
+		}
+		else
+			in_word++;
+		str++;
+	}
+	return (words);
+}
+
+/**
+ * strtow - splits sentence into words
+ * @str: the sentence string
+ *
+ * Return: pointer to string array
  */
 char **strtow(char *str)
 {
-	char **matrix, *tmp;
-	int i, k = 0, len = 0, words, c = 0, start, end;
+	int words = 0, in_word = 0;
+	char **ret, *word_start;
 
-	while (*(str + len))
-		len++;
-	words = count_word(str);
-	if (words == 0)
+	if (!str || !*str || !wordcount(str))
 		return (NULL);
-	matrix = (char **) malloc(sizeof(char *) * (words + 1));
-	if (matrix == NULL)
-		return (NULL);
-	for (i = 0; i <= len; i++)
+	ret = malloc(sizeof(char *) * (wordcount(str) + 1));
+	while (1)
 	{
-		if (str[i] == ' ' || str[i] == '\0')
+		if (*str == ' ' || !*str)
 		{
-			if (c)
+			if (in_word)
 			{
-				end = i;
-				tmp = (char *) malloc(sizeof(char) * (c + 1));
-				if (tmp == NULL)
+				ret[words] = malloc(sizeof(char) * (in_word + 1));
+				if (!ret[words])
+				{
 					return (NULL);
-				while (start < end)
-					*tmp++ = str[start++];
-				*tmp = '\0';
-				matrix[k] = tmp - c;
-				k++;
-				c = 0;
+				}
+				copychars(ret[words], word_start, str - 1);
+				words++;
+				in_word = 0;
 			}
+			if (!*str)
+				break;
 		}
-		else if (c++ == 0)
-			start = i;
+		else
+		{
+			if (!in_word++)
+				word_start = str;
+		}
+		str++;
 	}
-	matrix[k] = NULL;
-	return (matrix);
+	ret[words] = 0;
+	return (ret);
 }
